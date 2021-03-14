@@ -23,10 +23,10 @@ namespace Vecc.GhostTemplating.Client
             _contentKey = options.Value.ContentKey;
 
             _adminClient = new HttpClient();
-            _adminClient.BaseAddress = new Uri(options.Value.ApiUrl + "admin/");
+            _adminClient.BaseAddress = new Uri(options.Value.GhostUrl, "ghost/api/v3/admin/");
 
             _contentClient = new HttpClient();
-            _contentClient.BaseAddress = new Uri(options.Value.ApiUrl + "content/");
+            _contentClient.BaseAddress = new Uri(options.Value.GhostUrl, "ghost/api/v3/content/");
 
             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var now = (long)(DateTime.UtcNow - epoch).TotalSeconds;

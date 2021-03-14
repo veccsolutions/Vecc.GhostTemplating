@@ -167,7 +167,7 @@ namespace Vecc.GhostTemplating
             if (!string.IsNullOrWhiteSpace(author.CoverImage))
             {
                 using var client = new HttpClient();
-                var imageResult = await client.GetAsync(author.CoverImage);
+                var imageResult = await client.GetAsync(new Uri(options.GhostUrl, author.CoverImage));
 
                 if (imageResult.IsSuccessStatusCode)
                 {
@@ -349,7 +349,7 @@ namespace Vecc.GhostTemplating
             if (!string.IsNullOrWhiteSpace(settings.CoverImage))
             {
                 using var client = new HttpClient();
-                var imageResult = await client.GetAsync(settings.CoverImage);
+                var imageResult = await client.GetAsync(new Uri(options.GhostUrl, settings.CoverImage));
 
                 if (imageResult.IsSuccessStatusCode)
                 {
@@ -450,10 +450,10 @@ namespace Vecc.GhostTemplating
                             if (item.StartsWith(settings.Url))
                             {
                                 //we have an image, download it.
-                                var imageResult = await _imageClient.GetAsync(item);
+                                var imageResult = await _imageClient.GetAsync(new Uri(options.GhostUrl, item.Replace(settings.Url, "")));
                                 if (imageResult.IsSuccessStatusCode)
                                 {
-                                    var filePath = item.Replace(settings.Url, "");
+                                    var filePath = item.Replace(settings.Url, string.Empty);
                                     var destinationFile = Path.Combine(options.OutputDirectory, filePath);
                                     var destination = new System.IO.FileInfo(destinationFile);
                                     var destinationDirectory = destination.Directory.FullName;
@@ -644,14 +644,14 @@ namespace Vecc.GhostTemplating
             var iconUrl = settings.Icon;
             if (string.IsNullOrWhiteSpace(settings.Icon))
             {
-                iconUrl = settings.Url + "favicon.ico";
+                iconUrl = "favicon.ico";
             }
             var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(iconUrl);
+            var response = await httpClient.GetAsync(new Uri(options.GhostUrl, iconUrl.Replace(settings.Url, string.Empty)));
             if (response.IsSuccessStatusCode)
             {
                 var iconBytes = await response.Content.ReadAsByteArrayAsync();
-                var path = iconUrl.Replace(settings.Url, "");
+                var path = iconUrl.Replace(settings.Url, string.Empty);
                 path = Path.Combine(options.OutputDirectory, path);
                 var fileInfo = new System.IO.FileInfo(path);
                 var directory = fileInfo.Directory;
@@ -678,6 +678,8 @@ namespace Vecc.GhostTemplating
             {
                 nav.Url = nav.Url.Replace(settings.Url, "/");
             }
+
+            settings.CoverImage = settings.CoverImage?.Replace(settings.Url, "/");
         }
 
         private static Tag[] Sanitize(Tag[] tags, Settings settings)
@@ -725,6 +727,7 @@ namespace Vecc.GhostTemplating
         {
             foreach (var author in authors)
             {
+                author.CoverImage = author.CoverImage?.Replace(settings.Url, "/");
                 author.Url = author.Url.Replace(settings.Url, "/");
                 author.Settings = settings;
             }
