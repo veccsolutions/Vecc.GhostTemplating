@@ -1,0 +1,62 @@
+﻿@using Vecc.GhostTemplating
+@using Microsoft.Extensions.Options
+
+@model Vecc.GhostTemplating.Tag
+@inject IOptions<TemplatingOptions> templateOptions
+
+@{
+    Layout = "/Templates/layout.cshtml";
+    var options = templateOptions.Value;
+}
+
+<div class="post-feed">
+    @foreach (var post in Model.PostsToDisplay)
+    {
+        Html.RenderPartial("post-card.cshtml", post);
+    }
+</div>
+
+@section head
+{
+    <script type="application/ld+json">
+    {
+    "@@context": "https://schema.org",
+    "@@type": "Series",
+    "publisher": {
+        "@@type": "Organization",
+        "name": @Html.Raw(Model.Settings.Title.EscapeForJson()),
+        "url": @Html.Raw(Model.Settings.Url.EscapeForJson())
+        "logo": {
+            "@@type": "ImageObject",
+            "url": @Html.Raw((Model.Settings.Url + options.FavoriteIcon).EscapeForJson()),
+            "width": 48,
+            "height": 48
+        }
+     }
+    "url": @Html.Raw((Model.Settings.Url + "tag/" + Model.Slug).EscapeForJson()),
+    "name": @Html.Raw(Model?.Name.EscapeForJson()),
+    "mainEntityOfPage": {
+        "@@type": "WebPage",
+        "@@id": @Html.Raw(Model.Settings.Url.EscapeForJson())
+    }
+    </script>
+    @if (Model.Previous != null)
+    {
+        <link rel="prev" href="@(Model.Previous)" />
+    }
+    @if (Model.Next != null)
+    {
+        <link rel="next" href="@(Model.Next)" />
+    }
+}
+@section postheader
+{
+    <div class="outer site-header-background no-image">
+        <div class="inner site-header-content">
+            <h1 class="site-title">@Model.Name</h1>
+            <h2 class="site-description">
+                A collection of @Model.PostCount posts
+            </h2>
+        </div>
+    </div>
+}

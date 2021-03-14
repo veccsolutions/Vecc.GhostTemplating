@@ -1,0 +1,83 @@
+﻿@using Vecc.GhostTemplating
+@using Microsoft.Extensions.Options
+
+@model Page
+@inject IOptions<TemplatingOptions> templateOptions
+
+@{
+    Layout = "/Templates/layout.cshtml";
+    var options = templateOptions.Value;
+}
+
+<article class="post-full post no-image page no-image">
+    <header class="post-full-header">
+        <h1 class="post-full-title">@Model.Title</h1>
+    </header>
+    <section class="post-full-content">
+        <div class="post-content">
+            @Html.Raw(Model.HTML)
+        </div>
+    </section>
+</article>
+
+@section head
+{
+    <script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "Article",
+    "publisher": {
+        "@@type": "Organization",
+        "name": @Html.Raw(options.SiteName.EscapeForJson()),
+        "url": @Html.Raw(Model.Settings.Url.EscapeForJson()),
+        "logo": {
+            "@@type": "ImageObject",
+            "url": @Html.Raw((Model.Settings.Url + options.FavoriteIcon).EscapeForJson())",
+            "width": 48,
+            "height": 48
+        }
+    },
+    "author": {
+        "@@type": "Person",
+        "name": @Html.Raw(Model.PrimaryAuthor?.Name.EscapeForJson()),
+        "image": {
+            "@@type": "ImageObject",
+            "url": @Html.Raw(Model.PrimaryAuthor.ProfileImage.EscapeForJson()),
+            "width": 250,
+            "height": 250
+        },
+        "sameAs": []
+    },
+    "headline": @Html.Raw(Model.Title.EscapeForJson()),
+    "url": @Html.Raw((Model.Settings.Url + Model.Slug + "/").EscapeForJson()),
+    @if (Model.PublishedAt.HasValue)
+    {
+    <TEXT>"datePublished": @Html.Raw(Model.PublishedAt?.ToUniversalTime().ToString("O").EscapeForJson()),
+        </TEXT>
+    }
+    "dateModified": @Html.Raw(Model.UpdatedAt.ToUniversalTime().ToString("O").EscapeForJson()),
+    @if (Model.Tags != null && Model.Tags.Any())
+    {
+    <TEXT>"keywords": @Html.Raw(string.Join(", ", Model.Tags.Select(x=>x.Name)).EscapeForJson()),
+        </TEXT>
+    }
+    "description": @Html.Raw((Model.MetaDescription ?? Model.PlainText ?? Model.Excerpt).EscapeForJson()),
+    "mainEntityOfPage": {
+        "@@type": "WebPage",
+        "@@id": @Html.Raw(Model.Settings.Url.EscapeForJson())
+    }
+}
+    </script>
+}
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            // FitVids - start
+            var $postContent = $(".post-full-content");
+            $postContent.fitVids();
+            // FitVids - end
+        });
+    </script>
+}

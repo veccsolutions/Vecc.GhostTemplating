@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+        <PreserveCompilationReferences>true</PreserveCompilationReferences>
+        <UserSecretsId>E0B2491A-3D38-4949-8E11-C96022B11B4C</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="appsettings.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.13" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.13" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.13" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.13" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.13" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.13" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.13" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
+        <PackageReference Include="System.ServiceModel.Syndication" Version="5.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Assets\*">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Templates\*">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>

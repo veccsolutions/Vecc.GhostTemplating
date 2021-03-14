@@ -1,0 +1,116 @@
+﻿@using Vecc.GhostTemplating
+@using Microsoft.Extensions.Options
+
+@model IndexPage
+@inject IOptions<TemplatingOptions> templateOptions
+
+@{
+    Layout = "/Templates/layout.cshtml";
+    var options = templateOptions.Value;
+}
+
+<div class="post-feed">
+    @foreach (var post in Model.PostsToDisplay)
+    {
+        Html.RenderPartial("post-card.cshtml", post);
+    }
+</div>
+
+@section head
+{
+    <script type="application/ld+json">
+    {
+    "@@context": "https://schema.org",
+    "@@type": "Series",
+    "publisher": {
+        "@@type": "Organization",
+        "name": @Html.Raw(options.SiteName.EscapeForJson()),
+        "url": "@Html.Raw(Model.Settings.Url.EscapeForJson()))",
+        "logo": {
+            "@@type": "ImageObject",
+            "url": @Html.Raw((Model.Settings.Url + options.FavoriteIcon).EscapeForJson()),
+            "width": 48,
+            "height": 48
+        }
+     }
+    "url": @Html.Raw(Model.Settings.Url.EscapeForJson()),
+    "image": {
+        "@@type": "ImageObject",
+        "url": @Html.Raw((Model.Settings.Url+"content/images/main/image.png").EscapeForJson()),
+        "width": @(Model.ImageWidth),
+        "height": @(Model.ImageHeight)
+    },
+    "mainEntityOfPage": {
+        "@@type": "WebPage",
+        "@@id": @Html.Raw(Model.Settings.Url.EscapeForJson())
+    }
+    </script>
+    @if (Model.Previous != null)
+    {
+        <link rel="prev" href="@(Model.Previous)" />
+    }
+    @if (Model.Next != null)
+    {
+        <link rel="next" href="@(Model.Next)" />
+    }
+}
+
+@section postheader
+{
+    <style type="text/css">
+        .responsive-header-img {
+            background-image: url(/content/images/index/2000.png);
+        }
+
+        @@media(max-width: 1000px) {
+            .responsive-header-img {
+                background-image: url(/content/images/index/1000.png);
+                background-image: -webkit-image-set(url(/content/images/index/1000.png) 1x, url(/content/images/index/2000.png) 2x);
+                background-image: image-set(url(/content/images/index/1000.png) 1x, url(/content/images/index/2000.png) 2x);
+            }
+        }
+
+        @@media(max-width: 600px) {
+            .responsive-header-img {
+                background-image: url(/content/images/index600.png);
+                background-image: -webkit-image-set(url(/content/images/index/600.png) 1x, url(/content/images/index/1000.png) 2x);
+                background-image: image-set(url(/content/images/index/600.png) 1x, url(/content/images/index/1000.png) 2x);
+            }
+        }
+    </style>
+    <div class="outer site-header-background responsive-header-img">
+        <div class="inner">
+            <nav class="site-nav">
+                <div class="site-nav-left-wrapper">
+                    <div class="site-nav-left">
+                        <a class="site-nav-logo" href="/">@(Model.Settings.Title)</a>
+                        <div class="site-nav-content">
+                            <ul class="nav">
+                                @foreach (var nav in Model.Settings.Navigation)
+                                {
+                                    <li><a href="@(nav.Url)">@(nav.Label)</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="site-nav-right">
+                    <div class="social-links">
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(options.FeedlyLink))
+                    {
+                        <a class="rss-button" href="@(options.FeedlyLink)" title="RSS" target="_blank" rel="noopener">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="6.18" cy="17.82" r="2.18" /><path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56zm0 5.66v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z" /></svg>
+                        </a>
+                    }
+                </div>
+            </nav>
+            <div class="site-header-content">
+                <h1 class="site-title">
+                    @Model.Settings.Title
+                </h1>
+                <h2 class="site-description">@Model.Settings.Description</h2>
+            </div>
+        </div>
+    </div>
+}

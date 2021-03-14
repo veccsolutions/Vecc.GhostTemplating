@@ -1,0 +1,107 @@
+﻿@using Vecc.GhostTemplating
+@using Microsoft.Extensions.Options
+
+@model Post
+@inject IOptions<TemplatingOptions> templateOptions
+
+@{
+    var options = templateOptions.Value;
+}
+
+<!DOCTYPE html>
+<html ⚡>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <title>@Model.Title</title>
+    <meta name="description" content="@Model.MetaDescription" />
+    <meta property="og:site_name" content="@options.SiteName" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="@Model.OGTitle" />
+    <meta property="og:description" content="@Model.OGDescription" />
+    <meta property="og:url" content="@Model.Url" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@Model.TwitterTitle" />
+    <meta name="twitter:description" content="@Model.TwitterDescription" />
+    <meta name="twitter:url" content="@Model.Url" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="@Model.PrimaryAuthor?.Name" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="@string.Join(", ", Model.Tags.Select(x=>x.Name))" />
+    <link rel="alternate" type="application/rss+xml" title="@options.SiteName" href="@options.RssFeed" />
+
+    <script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "Article",
+    "publisher": {
+        "@@type": "Organization",
+        "name": @Html.Raw(options.SiteName.EscapeForJson()),
+        "url": @Html.Raw((Model.Settings.Url + Model.Slug).EscapeForJson()),
+        "logo": {
+            "@@type": "ImageObject",
+            "url": @Html.Raw((Model.Settings.Url + "/favicon.ico").EscapeForJson()),
+            "width": 48,
+            "height": 48
+        }
+    },
+    "author": {
+        "@@type": "Person",
+        "name": @Html.Raw(Model.PrimaryAuthor.Name.EscapeForJson()),
+        "image": {
+            "@@type": "ImageObject",
+            "url": @Html.Raw(Model.PrimaryAuthor.ProfileImage.EscapeForJson()),
+            "width": 250,
+            "height": 250
+        },
+        "sameAs": []
+    },
+    "headline": @Html.Raw(Model.Title.EscapeForJson()),
+    "url": @Html.Raw(Model.Settings.Url + Model.Url.EscapeForJson()),
+    @if (Model.PublishedAt.HasValue)
+    {
+    <TEXT>"datePublished": @Html.Raw(Model.PublishedAt?.ToUniversalTime().ToString("O").EscapeForJson()),
+        </TEXT>
+    }
+    "dateModified": @Html.Raw(Model.UpdatedAt.ToUniversalTime().ToString("O").EscapeForJson()),
+    @if (Model.Tags!= null)
+    {
+    <TEXT>"keywords": @Html.Raw(string.Join(", ", Model.Tags.Select(x=>x.Name)).EscapeForJson()),
+        </TEXT>
+    }
+    "description": @Html.Raw(Model.OGDescription.EscapeForJson()),
+    "mainEntityOfPage": {
+        "@@type": "WebPage",
+        "@@id": @Html.Raw(Model.Settings.Url.EscapeForJson())
+    }
+}
+    </script>
+    @Html.Partial("amp-css.cshtml")
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+</head>
+<body class="amp-template">
+    <header class="page-header">
+        <a href="/">@Model.Settings.Title</a>
+    </header>
+    <main class="content" role="main">
+        <article class="post">
+
+            <header class="post-header">
+                <h1 class="post-title">@Model.Title</h1>
+                <section class="post-meta">
+                    @Model.PrimaryAuthor.Name -
+                    <time class="post-date" datetime="@Model.PublishedAt?.ToString("yyyy-MM-dd")">@Model.PublishedAt?.ToString("dd MMM yyyy")</time>
+                </section>
+            </header>
+            <section class="post-content">
+                @Html.Raw(Model.HTML)
+            </section>
+        </article>
+    </main>
+    <footer class="page-footer">
+        <h3>@Model.Settings.Title</h3>
+        <p>@Model.Settings.Description</p>
+        <p><a href="/">Read more posts →</a></p>
+    </footer>
+</body>
+</html>

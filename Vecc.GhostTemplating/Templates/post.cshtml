@@ -1,0 +1,149 @@
+﻿@using Vecc.GhostTemplating
+@using Microsoft.Extensions.Options
+
+@model Post
+@inject IOptions<TemplatingOptions> templateOptions
+
+@{
+    Layout = "/Templates/layout.cshtml";
+    var options = templateOptions.Value;
+}
+
+<article class="post-full post no-image page no-image">
+    <header class="post-full-header">
+
+        @if (Model.Tags.Length > 0)
+        {
+            <section class="post-full-tags">
+                @foreach (var tag in Model.Tags)
+                {
+                    <a href="@(tag.Url)">@(tag.Name)</a><TEXT>&nbsp;</TEXT>
+                }
+            </section>
+        }
+
+        <h1 class="post-full-title">@Model.Title</h1>
+    </header>
+
+    <section class="post-full-content">
+        <div class="post-content">
+            @Html.Raw(Model.HTML)
+        </div>
+    </section>
+    @if (!string.IsNullOrWhiteSpace(options.DisqusUrl))
+    {
+        <section class="post-full-comments">
+            <div id="disqus_thread"></div>
+            <script>
+            var disqus_config = function () {
+                this.page.url = "@Model.Url";
+                this.page.identifier = "ghost-@Model.CommentId";
+            };
+            (function () {
+                var d = document, s = d.createElement('script');
+                s.src = '@options.DisqusUrl';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+            </script>
+        </section>
+    }
+</article>
+
+@section head
+{
+    @foreach (var tag in Model.Tags)
+    {
+        <meta property="article:tag" content="@(tag.Name)" />
+    }
+    <meta property="article:published_time" content="@(Model.PublishedAt?.ToString("O"))" />
+    <meta property="article:modified_time" content="@(Model.UpdatedAt.ToString("O"))" />
+    <meta property="twitter:label2" content="Filed under" />
+    <meta property="twitter:data2" content="@(string.Join(", ", Model.Tags?.Select(x=>x.Name) ?? new string[0]))" />
+    <link rel="amphtml" href="@(Model.Settings.Url)@(Model.Slug)/amp" />
+
+    <script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "Article",
+    "publisher": {
+        "@@type": "Organization",
+        "name": @Html.Raw(options.SiteName.EscapeForJson()),
+        "url": @Html.Raw(Model.Settings.Url.EscapeForJson()),
+        "logo": {
+            "@@type": "ImageObject",
+            "url": @Html.Raw((Model.Settings.Url + options.FavoriteIcon).EscapeForJson()),
+            "width": 48,
+            "height": 48
+        }
+    },
+    "author": {
+        "@@type": "Person",
+        "name": @Html.Raw(Model.PrimaryAuthor.Name.EscapeForJson()),
+        "image": {
+            "@@type": "ImageObject",
+            "url": @Html.Raw(Model.PrimaryAuthor.ProfileImage.EscapeForJson()),
+            "width": 250,
+            "height": 250
+        },
+        "sameAs": []
+    },
+    "headline": @Html.Raw(Model.Title.EscapeForJson()),
+    "url": @Html.Raw((Model.Settings.Url + Model.Slug +"/").EscapeForJson()),
+    @if (Model.PublishedAt.HasValue)
+    {
+    <TEXT>"datePublished": @Html.Raw(Model.PublishedAt?.ToUniversalTime().ToString("O").EscapeForJson()),
+        </TEXT>
+    }
+    "dateModified": @Html.Raw(Model.UpdatedAt.ToUniversalTime().ToString("O").EscapeForJson()),
+    @if (Model.Tags!= null)
+    {
+    <TEXT>"keywords": @Html.Raw(string.Join(", ", Model.Tags.Select(x=>x.Name)).EscapeForJson()),
+        </TEXT>
+    }
+    "description": @Html.Raw(Model.MetaDescription.EscapeForJson()),
+    "mainEntityOfPage": {
+        "@@type": "WebPage",
+        "@@id": @Html.Raw(Model.Settings.Url.EscapeForJson())
+    }
+}
+    </script>
+}
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            // FitVids - start
+            var $postContent = $(".post-full-content");
+            $postContent.fitVids();
+            // FitVids - end
+
+            // Replace nav with title on scroll - start
+            Casper.stickyNavTitle({
+                navSelector: '.site-nav-main',
+                titleSelector: '.post-full-title',
+                activeClass: 'nav-post-title-active'
+            });
+            // Replace nav with title on scroll - end
+
+            // Hover on avatar
+            var hoverTimeout;
+            $('.author-list-item').hover(function () {
+                var $this = $(this);
+
+                clearTimeout(hoverTimeout);
+
+                $('.author-card').removeClass('hovered');
+                $(this).children('.author-card').addClass('hovered');
+
+            }, function () {
+                var $this = $(this);
+
+                hoverTimeout = setTimeout(function () {
+                    $this.children('.author-card').removeClass('hovered');
+                }, 800);
+            });
+        });
+    </script>
+}

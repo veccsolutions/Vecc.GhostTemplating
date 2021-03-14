@@ -1,0 +1,42 @@
+﻿@using Vecc.GhostTemplating
+@model Post
+
+<article class="post-card post no-image no-image">
+    <div class="post-card-content">
+        <a class="post-card-content-link" href="/@(Model.Slug)/">
+            <header class="post-card-header">
+                @if (Model.PrimaryTag != null)
+                {
+                    <div class="post-card-primary-tag">@(Model.PrimaryTag.Name)</div>
+                }
+                <h2 class="post-card-title">@(Model.Title)</h2>
+            </header>
+
+            <section class="post-card-excerpt">
+                <p>@(Model.Excerpt)</p>
+            </section>
+        </a>
+
+        <footer class="post-card-meta">
+            <ul class="author-list">
+                @foreach (var author in Model.Authors)
+                {
+                    <li class="author-list-item">
+                        <div class="author-name-tooltip">
+                            @author.Name
+                        </div>
+
+                        <a href="/author/@author.Slug/" class="static-avatar">
+                            <img class="author-profile-image" src="@author.ProfileImage" alt="@author.Name" />
+                        </a>
+                    </li>
+                }
+            </ul>
+            <div class="post-card-byline-content">
+                <span><a href="/author/@(Model.PrimaryAuthor.Slug)/">@Model.PrimaryAuthor.Name</a></span>
+                <span class="post-card-byline-date"><time datetime="@(Model.PublishedAt?.ToString("yyyy-MM-dd"))">@(Model.PublishedAt?.ToString("d MMM yyyy"))</time> <span class="bull">&bull;</span> @(Model.ReadingTime) min read</span>
+            </div>
+        </footer>
+
+    </div>
+</article>
