@@ -1,0 +1,41 @@
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+  Version.MajorMinor: 1.0
+  Version.Revision: $[counter(variables['Version.MajorMinor'], 0)]
+  Version: $(Version.MajorMinor).$(Version.Revision)
+  tag: $(Version.MajorMinor).$(Version.Revision)
+
+name: $(Version.MajorMinor).$(Version.Revision)
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        containerRegistry: 'harbor.veccsolutions.org-vecc-Vecc.GhostTemplating'
+        repository: 'vecc/ghost-templating'
+        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        tags: |
+          $(tag)
+          latest
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'harbor.veccsolutions.org-vecc-Vecc.GhostTemplating'
+        repository: 'vecc/ghost-templating'
+        command: 'push'
+        tags: |
+          $(tag)
+          latest
