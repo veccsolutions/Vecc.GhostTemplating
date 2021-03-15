@@ -12,7 +12,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+    <!--
+        Build Number: @(Environment.GetEnvironmentVariable("Build_BuildNumber"))
+        Generated at: @(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
+    -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -40,8 +43,7 @@
     @RenderSection("head", false)
 
     <link rel="alternate" type="application/rss+xml" title="@(options.SiteName)" href="@options.RssFeed" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism.min.css" rel="stylesheet" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-okaidia.min.css" integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" />
 </head>
 <body class="@header.BodyClasses">
 
@@ -101,33 +103,52 @@
 
     </div>
 
-
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
     <script src="/assets/casper.js?v=ebf8f423ff"></script>
 
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-bash.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-css.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-markup.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-javascript.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-json.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-typescript.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-sql.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-scss.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-sass.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-python.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-powershell.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-nginx.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-markdown.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-less.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-http.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-csharp.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-asciidoc.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-jsx.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js" integrity="sha512-YBk7HhgDZvBxmtOfUdvX0z8IH2d10Hp3aEygaMNhtF8fSOvBZ16D/1bXZTJV6ndk/L/DlXxYStP8jrF77v2MIg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-aspnet.min.js" integrity="sha512-qpyDw2o453xUjHCXzDG2QZh39puVUB5SkzNqeu1LknDL49vH6n97YHsn0VsiGnj/zOCiNrrDKJwHvlIVePlFPQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-bash.min.js" integrity="sha512-JvRd44DHaJAv/o3wxi/dxhz2TO/jwwX8V5/LTr3gj6QMQ6qNNGXk/psoingLDuc5yZmccOq7XhpVaelIZE4tsQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-csharp.min.js" integrity="sha512-c+g36Rm5HvMUIjUwTcEA9iVkFtNJrCDDNubbaUEhCuHcEnXRcsnJRVjoEK1k9OryJnu5vF7IW40vjV5F1EfXRw==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-css.min.js" integrity="sha512-1qYok2x2Rsm2y+mrdyrp00iH7xYSgVyIQ1egDAoT7CBZ3kSzlaJK+NhWAh746NeL3gnH6dnP8FGS+3xOdwO7ig==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-css-extras.min.js" integrity="sha512-JEJN8jMnX+Ryl2SPlM18/6TwaH5FnN+Mvasfnh3E7awC/JAVpuWOvc5rSMqCD7MM22x5PxQgRUr5h8G2zHceMQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-docker.min.js" integrity="sha512-Zzm/P2jewqKAST5N1nARMvI72sQaPf7iWSO8AzcVsSQiEujG2NWrM/jEuiMDXyehDpHI/7gEZ2O2YsOmiaPx+g==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-http.min.js" integrity="sha512-EXQxWIIHxnR7XNmyw/06uwfg6ehFapkC+aMBkHZ47GAeWby/jGmqlxF+02HwIWquFUIdCtC2J8D/by7JnfowNg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-javascript.min.js" integrity="sha512-I4ZWqUpk7wqHcm7Gkv7k4IdgrDUTlGm1a7xeqyduqZLWeoGOn2E9us4XNBEDGclpk+6d1CmqIHYwmoyyL59zeA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-json.min.js" integrity="sha512-IC7rV8RslChgByOdUFC6ePqOGn+OwJhnKC3S5AezM8DAiOdGhJMwgsIvBChsa2yuxxoPbH2+W/kjNUM1cc+jUQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-jsx.min.js" integrity="sha512-c1a+pqPUBpCSdbjFqSBAmmdFgw+vJ3IvgwN96s+G5gBAFBTsjfuxF4ZbjYdn3PilySDQ8XTqi0ox/zv//oG73A==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-markdown.min.js" integrity="sha512-pRb3BsoM2hn873HdE8zaDjvlJdpRe2rmSnIkdlVQJiQ1pnIKDtL/dfoaq4wgtvX9J6/uyHeP+r1j71YQRLe2dQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-nginx.min.js" integrity="sha512-/MNzg8GlnVrAau/TZClh1jxgHNX0HDgidbGnHS5x1OtbKiNoK3e0XNd1oV16xmmeDHjisa3GKLArUau+43GZ4A==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-powershell.min.js" integrity="sha512-tdxXtrfmqnIUqYpCfqMHUoj+ibbVQ+RMD/9Q9IlPIzLYHkZdIrpQvnjoYivFMxYxFp+EZRUQJjxCog4+V9wSfQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-shell-session.min.js" integrity="sha512-p9Q2CABx+Zze5z1dhjfhY1BoGowvE8ADk7B6DOyR1RUPPam6dlvsd2IufQ8HzSOBE3QtJGQKFhPNd9jRBl31+Q==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-sql.min.js" integrity="sha512-fgFGzRJStVVhs4cv/lQfAXHzcXcp4wEB3ElVApu7pkFVODd89d28hrehyJhCJKZrsTXLs00L4If+SOGNz6DoZg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-xml-doc.min.js" integrity="sha512-7UKWE2rgzbPpx1Yu/BPH7bHTHiIjheYAtyVQUxAjyBjet5956cCO8cFZbMpMkwHt6U7Eg1PciDXNTsGt4Dz33g==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-yaml.min.js" integrity="sha512-QRKKJS95wG2dOCdc7Cm0Zbu+L04xY8fTwhHG3UnqZPMiFrAN8uXrqVTx//eqvTaoYwNJ7oFN3Vej5gnJ+GAxkw==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-typescript.min.js" integrity="sha512-9CvArJQPTJqAXN0HJ9DrggF3yNXh09H/pDkKya7eo7Csk2ZisKOiTdJthVFPKyNc3M0m9ofpgfDwGei0V7pgJw==" crossorigin="anonymous"></script>
+
+    @*<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-bash.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-css.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-markup.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-javascript.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-json.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-typescript.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-sql.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-scss.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-sass.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-python.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-powershell.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-nginx.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-markdown.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-less.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-http.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-csharp.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-asciidoc.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-jsx.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-yaml.min.js"></script>*@
+
+
+    @RenderSection("scripts", false)
 
     <script>
         (function (i, s, o, g, r, a, m) {
@@ -140,6 +161,5 @@
         ga('send', 'pageview');
     </script>
 
-    @RenderSection("scripts", false)
 </body>
 </html>
