@@ -23,8 +23,44 @@
         }
 
         <h1 class="post-full-title">@Model.Title</h1>
-    </header>
 
+        @{
+            var excerpt = Model.Excerpt;
+            if (string.IsNullOrWhiteSpace(excerpt))
+            {
+                excerpt = Model.CustomExcerpt;
+            }
+
+            if (!string.IsNullOrWhiteSpace(excerpt) && !Model.HTML.ToLowerInvariant().Contains(excerpt.ToLowerInvariant()))
+            {
+                <section class="post-full-custom-excerpt">
+                    <p>
+                        @Html.Raw(Model.Excerpt)
+                    </p>
+                </section>
+            }
+        }
+        <section class="post-full-byline-content">
+            <ul class="author-list">
+                @foreach (var author in Model.Authors)
+                {
+                    <li class="author-list-item">
+                        <div class="author-name-tooltip">
+                            @author.Name
+                        </div>
+
+                        <a href="/author/@author.Slug/" class="author-avatar">
+                            <img class="author-profile-image" src="@author.ProfileImage" alt="@author.Name" />
+                        </a>
+                    </li>
+                }
+            </ul>
+            <section class="post-full-byline-meta">
+                <h4><a href="/author/@(Model.PrimaryAuthor.Slug)/">@Model.PrimaryAuthor.Name</a></h4>
+                <div><time datetime="@(Model.PublishedAt?.ToString("yyyy-MM-dd"))">@(Model.PublishedAt?.ToString("d MMM yyyy"))</time> <span class="bull">&bull;</span> @(Model.ReadingTime) min read</div>
+            </section>
+        </section>
+    </header>
     <section class="post-full-content">
         <div class="post-content">
             @Html.Raw(Model.HTML)
