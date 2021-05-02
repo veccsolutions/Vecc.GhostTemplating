@@ -16,8 +16,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.ServiceModel.Syndication;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
@@ -27,9 +25,9 @@ using Vecc.GhostTemplating.RazorSupport;
 
 namespace Vecc.GhostTemplating
 {
-    class Program
+    internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             var servicesMain = ServiceProvider.Build(args);
             using var serviceScope = servicesMain.CreateScope();
@@ -429,7 +427,7 @@ namespace Vecc.GhostTemplating
             }
         }
 
-        private static HttpClient _imageClient = new HttpClient();
+        private static readonly HttpClient _imageClient = new HttpClient();
         private static async Task DownloadImagesFromPostAsync(string post, Settings settings, TemplatingOptions options)
         {
             //this straight sucks
@@ -514,60 +512,62 @@ namespace Vecc.GhostTemplating
                 Directory.CreateDirectory(targetDirectory);
             }
 
-            var feedItems = new List<SyndicationItem>();
             var oldestPost = DateTime.Now.AddMonths(-6);
+            var items = new List<RssFeed.Item>();
 
             foreach (var post in posts.Where(x => x.PublishedAt > oldestPost))
             {
-                var item = new SyndicationItem();
-                foreach (var author in post.Authors)
-                {
-                    item.Authors.Add(new SyndicationPerson(string.Empty, author.Name, settings.Url + "author/" + author.Slug));
-                }
-                item.BaseUri = new Uri(post.Settings.Url + post.Slug + "/");
-                item.Content = new TextSyndicationContent(post.HTML, TextSyndicationContentKind.Html);
-                item.Copyright = new TextSyndicationContent(options.FormattedCopyright, TextSyndicationContentKind.Plaintext);
-                item.Id = post.UUID;
-                item.LastUpdatedTime = post.UpdatedAt;
-                item.PublishDate = post.PublishedAt.Value;
-                item.Summary = new TextSyndicationContent(post.MetaDescription ?? post.CustomExcerpt ?? post.Excerpt);
+                var item = new RssFeed.Item();
+                item.Authors = post.Authors.Select(author => new RssFeed.ItemAuthor { Name = author.Name, Uri = settings.Url + "author/" + author.Slug }).ToArray();
+                item.Categories = post.Tags.Select(tag => tag.Name).ToArray();
+                item.Content = post.HTML;
+                item.Creator = post.PrimaryAuthor.Name;
+                item.Description = post.MetaDescription ?? post.CustomExcerpt ?? post.Excerpt;
+                item.Guid = new RssFeed.ItemGuid { Value = post.UUID };
+                item.Link = post.Settings.Url + post.Slug + "/";
+                item.PublishedDate = post.PublishedAt.Value.ToString("R");
+                item.Title = post.Title;
 
-                foreach (var tag in post.Tags)
-                {
-                    item.Categories.Add(new SyndicationCategory(tag.Name));
-                }
-
-                item.Title = new TextSyndicationContent(post.Title);
-                feedItems.Add(item);
+                items.Add(item);
             }
 
-            var feed = new SyndicationFeed(feedItems);
-
-            foreach (var author in authors)
+            var feed = new RssFeed.Feed();
+            var channel = new RssFeed.Channel();
+            channel.AtomLink = new RssFeed.AtomLink
             {
-                var person = new SyndicationPerson(string.Empty, author.Name, settings.Url + "author/" + author.Slug);
-                feed.Authors.Add(person);
-                feed.Contributors.Add(person);
-            }
+                HRef = options.RssFeed,
+                Relationship = "self",
+                Type = "application/rss+xml"
+            };
+            channel.Categories = tags.Select(tag => tag.Name).ToArray();
+            channel.Contributors = authors.Select(author => new RssFeed.Contributor { Name = author.Name, Uri = settings.Url + "author/" + author.Slug + "/" }).ToArray();
+            channel.Copyright = options.FormattedCopyright;
+            channel.Description = settings.Description;
+            channel.Generator = options.GeneratorName;
+            channel.Image = new RssFeed.Image { Link = settings.Url, Title = settings.Title, Url = settings.Url + "favicon.png" };
+            channel.Items = items.ToArray();
+            channel.LastBuildDate = DateTime.UtcNow.ToString("R");
+            channel.Link = settings.Url;
+            channel.Title = settings.Title;
+            channel.TTL = 60;
 
-            foreach (var tag in tags)
-            {
-                feed.Categories.Add(new SyndicationCategory(tag.Name));
-            }
+            feed.Channels = new[] { channel };
+            feed.Version = "2.0";
 
-            feed.Copyright = new TextSyndicationContent(options.FormattedCopyright, TextSyndicationContentKind.Plaintext);
-            feed.Description = new TextSyndicationContent(settings.Description, TextSyndicationContentKind.Plaintext);
-            feed.TimeToLive = options.RssTimeToLive;
-            feed.Generator = options.GeneratorName;
-            feed.ImageUrl = new Uri(settings.Url + "favicon.png");
-            feed.LastUpdatedTime = DateTime.UtcNow;
-            feed.Title = new TextSyndicationContent(settings.Title, TextSyndicationContentKind.Plaintext);
             using var memoryStream = new MemoryStream();
             using var xmlWriter = XmlWriter.Create(memoryStream, new XmlWriterSettings
             {
-                Indent = true
+                Indent = true,
             });
-            feed.SaveAsRss20(xmlWriter);
+
+            var namespaces = new XmlSerializerNamespaces();
+            namespaces.Add("dc", "http://purl.org/dc/elements/1.1/");
+            namespaces.Add("content", "http://purl.org/rss/1.0/modules/content/");
+            namespaces.Add("atom", "http://www.w3.org/2005/Atom");
+            namespaces.Add("media", "http://search.yahoo.com/mrss/");
+
+            var serializer = new XmlSerializer(typeof(RssFeed.Feed));
+            serializer.Serialize(xmlWriter, feed, namespaces);
             xmlWriter.Flush();
             File.WriteAllBytes(Path.Combine(targetDirectory, "index.html"), memoryStream.ToArray());
         }
