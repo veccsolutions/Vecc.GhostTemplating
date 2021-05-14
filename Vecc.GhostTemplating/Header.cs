@@ -23,5 +23,6 @@
         public string Url { get; set; }
         public Navigation[] Navigation { get => Settings.Navigation; }
         public bool RenderNavigation { get; set; } = true;
+        public string Description { get; internal set; }
     }
 }

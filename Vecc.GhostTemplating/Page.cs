@@ -25,6 +25,7 @@ namespace Vecc.GhostTemplating
             }
 
             result.Author = page.PrimaryAuthor;
+            result.Description = page.MetaDescription ?? page.CustomExcerpt ?? page.Excerpt;
             result.ImageHeight = 0;
             result.ImageWidth = 0;
             result.OGDescription = page.OGDescription;

@@ -121,6 +121,7 @@ namespace Vecc.GhostTemplating
 
             result.Author = PrimaryAuthor;
             result.BodyClasses = "post-template";
+            result.Description = MetaDescription ?? CustomExcerpt ?? Excerpt;
             result.ImageHeight = 0;
             result.ImageWidth = 0;
             result.OGDescription = OGDescription;

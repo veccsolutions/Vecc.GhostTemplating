@@ -57,11 +57,13 @@ namespace Vecc.GhostTemplating
             {
                 Author = this,
                 BodyClasses = "author-template author-edward",
+                Description = Name,
                 InnerDivClasses = "inner posts",
                 HeaderClass = "site-archive-header",
                 OGDescription = MetaDescription,
                 OGImage = CoverImage,
-                Settings = Settings
+                Settings = Settings,
+                Title = Name
             };
         }
     }

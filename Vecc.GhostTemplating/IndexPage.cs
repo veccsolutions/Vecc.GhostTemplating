@@ -15,10 +15,12 @@
             var result = new Header();
 
             result.HeaderClass = "site-home-header";
+            result.Description = Settings.Description;
             result.OGDescription = Settings.OGDescription;
             result.OGTitle = Options.SiteName;
             result.RenderNavigation = false;
             result.Settings = Settings;
+            result.Title = Settings.Title;
 
             return result;
         }
